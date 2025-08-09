@@ -1,6 +1,7 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import reactor.rabbitmq.Receiver;
 
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,6 +73,14 @@ public class ReactiveRabbitMQConsumerHandler {
     private DomainEvent convertMessage(byte[] body) {
         try {
             return objectMapper.readValue(body, DomainEvent.class);
+        } catch (Exception e) {
+            throw new TechnicalException(e, TechnicalExceptionMessage.TECHNICAL_JSON_DESERIALIZE_EXCEPTION);
+        }
+    }
+
+    private EventModel convertMessageModel(LinkedHashMap<String, Object> body) {
+        try {
+            return objectMapper.convertValue(body, EventModel.class);
         } catch (Exception e) {
             throw new TechnicalException(e, TechnicalExceptionMessage.TECHNICAL_JSON_DESERIALIZE_EXCEPTION);
         }

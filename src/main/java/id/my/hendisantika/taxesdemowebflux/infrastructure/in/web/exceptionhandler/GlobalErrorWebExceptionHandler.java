@@ -16,6 +16,7 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RequestPredicates;
@@ -155,5 +156,15 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         return ExceptionUtil.buildErrorResponse(restConsumerException)
                 .zipWith(Mono.just(HttpStatus.valueOf(
                         Integer.parseInt(restConsumerException.getRestConsumerExceptionMessage().getHttpStatus()))));
+    }
+
+    private Mono<ServerResponse> buildServerResponse(ErrorList.Error error,
+                                                     ServerRequest request, HttpStatus httpStatus) {
+        var errorsResponse = ErrorList.builder().errors(List.of(error)).build();
+        return ServerResponse.status(httpStatus)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(errorsResponse)
+                .doOnNext(response -> request.attributes()
+                        .put(LogConstantHelper.CACHE_RESPONSE_BODY.getName(), errorsResponse));
     }
 }

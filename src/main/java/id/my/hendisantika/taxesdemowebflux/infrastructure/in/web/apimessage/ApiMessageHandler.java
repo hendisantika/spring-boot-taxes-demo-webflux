@@ -39,4 +39,16 @@ public class ApiMessageHandler {
                 .flatMap(ServerResponse.ok()::bodyValue)
                 .onErrorResume(Mono::error);
     }
+
+    public Mono<ServerResponse> sendMessageQueue(ServerRequest serverRequest) {
+        return requestValidator.validateRequestBody(serverRequest, MessageRequestDTO.class)
+                .flatMap(messageRequest ->
+                        requestValidator.validateBody(messageRequest)
+                                .thenReturn(messageRequest))
+                .map(MessageRequestDTO::message)
+                .flatMap(apiMessageUseCase::sendMessageQueue)
+                .map(JsonApiDTO::new)
+                .flatMap(ServerResponse.ok()::bodyValue)
+                .onErrorResume(Mono::error);
+    }
 }

@@ -41,4 +41,14 @@ public class EventsHandler {
                 .processMessage(messageModel)
                 .then();
     }
+
+    public Mono<Void> handlerTaxMessage(DomainEvent<DomainEventModel> domainEventDomainEvent) {
+        logger.log(Level.INFO, "📮 Tienes un nuevo mensaje del evento: {0} y routekey: {1}, mensaje: {2}"
+                , new Object[]{EventsName.TAX_EVENT_OTHER
+                        , eventsProperties.getEvents().get(EventsName.TAX_EVENT_OTHER),
+                        domainEventDomainEvent});
+        return this.processMessageUseCase.processMessage(
+                this.getMessageModel(domainEventDomainEvent, "handlerTaxMessage")
+        ).then();
+    }
 }

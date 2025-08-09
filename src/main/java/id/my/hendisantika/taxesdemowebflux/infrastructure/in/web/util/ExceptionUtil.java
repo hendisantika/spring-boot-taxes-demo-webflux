@@ -1,6 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.util;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BadRequestException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ErrorList;
 import lombok.experimental.UtilityClass;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,4 +21,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ExceptionUtil {
     private static final String COLON = ":";
+
+    public Mono<ErrorList.Error> buildErrorFromException(Throwable throwable) {
+        return Mono.error(throwable)
+                .onErrorResume(BadRequestException.class, ExceptionUtil::buildErrorResponse)
+                .onErrorResume(TechnicalException.class, ExceptionUtil::buildErrorResponse)
+                .onErrorResume(BusinessException.class, ExceptionUtil::buildErrorResponse)
+                //.onErrorResume(RestConsumerException.class, ExceptionUtil::buildErrorResponse)
+                .onErrorResume(ExceptionUtil::buildErrorResponse)
+                .cast(ErrorList.Error.class);
+    }
 }

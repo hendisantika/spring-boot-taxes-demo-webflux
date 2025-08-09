@@ -5,6 +5,7 @@ import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessExcept
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ErrorList;
 import lombok.experimental.UtilityClass;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 /**
@@ -30,5 +31,11 @@ public class ExceptionUtil {
                 //.onErrorResume(RestConsumerException.class, ExceptionUtil::buildErrorResponse)
                 .onErrorResume(ExceptionUtil::buildErrorResponse)
                 .cast(ErrorList.Error.class);
+    }
+
+    public ErrorList.Error addDomain(ServerRequest serverRequest, ErrorList.Error error) {
+        return error.toBuilder()
+                .domain(String.join(COLON, serverRequest.method().name(), serverRequest.path()))
+                .build();
     }
 }

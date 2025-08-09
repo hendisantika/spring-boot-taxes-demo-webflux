@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,4 +27,16 @@ public class ApiMessageHandler {
     private static final Logger log = LogManager.getLogger(ApiMessageHandler.class);
     private final IApiMessageUseCase apiMessageUseCase;
     private final RequestValidator requestValidator;
+
+    public Mono<ServerResponse> sendMessageEvent(ServerRequest serverRequest) {
+        return requestValidator.validateRequestBody(serverRequest, MessageRequestDTO.class)
+                .flatMap(messageRequest ->
+                        requestValidator.validateBody(messageRequest)
+                                .thenReturn(messageRequest))
+                .map(MessageRequestDTO::message)
+                .flatMap(apiMessageUseCase::sendMessageEvent)
+                .map(JsonApiDTO::new)
+                .flatMap(ServerResponse.ok()::bodyValue)
+                .onErrorResume(Mono::error);
+    }
 }

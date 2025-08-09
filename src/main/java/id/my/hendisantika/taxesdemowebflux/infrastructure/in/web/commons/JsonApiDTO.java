@@ -1,4 +1,4 @@
-package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.apimessage.commons;
+package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.commons;
 
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;

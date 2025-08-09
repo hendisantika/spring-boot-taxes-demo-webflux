@@ -1,6 +1,10 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.mapper;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.HolidayModel;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.dto.HolidayResponseDTO;
 import lombok.experimental.UtilityClass;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,4 +19,16 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class HolidayMapper {
+    public static List<HolidayResponseDTO> buildResponse(List<HolidayModel> holidays) {
+        return holidays.stream()
+                .map(holiday ->
+                        new HolidayResponseDTO(
+                                holiday.getId(),
+                                holiday.getYear(),
+                                holiday.getDate(),
+                                holiday.getEnabled().intValue() == 1 ? "A" : "I"
+                        )
+                )
+                .toList();
+    }
 }

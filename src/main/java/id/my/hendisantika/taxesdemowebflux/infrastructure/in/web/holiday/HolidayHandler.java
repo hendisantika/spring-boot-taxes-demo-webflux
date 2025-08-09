@@ -67,4 +67,27 @@ public class HolidayHandler {
                 .flatMap(ServerResponse.ok()::bodyValue)
                 .onErrorResume(Mono::error);
     }
+
+    public Mono<ServerResponse> updateHolidayState(ServerRequest serverRequest) {
+        return Mono.just(serverRequest)
+                .map(rq -> serverRequest.pathVariable("id"))
+                .map(Integer::parseInt)
+                .flatMap(id ->
+                        requestValidator.validateRequestBody(serverRequest, HolidayUpdateRequestDTO.class)
+                                .flatMap(holidayRequest ->
+                                        requestValidator.validateBody(holidayRequest)
+                                                .thenReturn(holidayRequest))
+                                .filter(rq -> id.intValue() == rq.getId())
+                                .switchIfEmpty(Mono.defer(() -> Mono.error(new BadRequestException(REQUEST_BODY))))
+                                .flatMap(holiday ->
+                                        holidayUseCase.updateHoliday(id, HolidayMapper.buildHolidayModel(holiday))
+                                )
+                                .map(HolidayMapper::buildResponseData)
+                                .map(JsonApiDTO::new)
+                                .flatMap(ServerResponse.ok()::bodyValue)
+                                .onErrorResume(Mono::error)
+                );
+
+
+    }
 }

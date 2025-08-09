@@ -33,4 +33,14 @@ public class ApiMessageUseCase implements IApiMessageUseCase {
                 .flatMap(eventPublisherPort::emit)
                 .thenReturn(message);
     }
+
+    @Override
+    public Mono<String> sendMessageQueue(String message) {
+        return Mono.just(EventUtil.generateEvent(TYPE_EVENT_QUEUE, message))
+                .flatMap(event ->
+                        saveMessageRepository(event, "sendMessageQueue"))
+                .flatMap(eventPublisherPort::emit)
+                .thenReturn(message);
+
+    }
 }

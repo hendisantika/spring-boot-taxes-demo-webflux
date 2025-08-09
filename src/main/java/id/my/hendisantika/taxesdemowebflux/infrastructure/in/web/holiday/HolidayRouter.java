@@ -1,0 +1,40 @@
+package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
+/**
+ * Created by IntelliJ IDEA.
+ * Project : taxes-demo-webflux
+ * User: hendisantika
+ * Link: s.id/hendisantika
+ * Email: hendisantika@yahoo.co.id
+ * Telegram : @hendisantika34
+ * Date: 10/08/25
+ * Time: 05.46
+ * To change this template use File | Settings | File Templates.
+ */
+@Configuration
+@RequiredArgsConstructor
+public class HolidayRouter {
+
+    @Bean
+    public RouterFunction<ServerResponse> holydayRouterFunction(HolidayHandler holidayHandler) {
+        return route().nest(
+                accept(APPLICATION_JSON),
+                builder -> builder
+                        .GET("/holiday", holidayHandler::getHoliday)
+                        .GET("/holiday/{id}", holidayHandler::getHolidayId)
+                        .POST("/holiday-external", holidayHandler::getHolidayExternal)
+                        .PUT("/holiday-state/{id}", holidayHandler::updateHolidayState)
+
+        ).build();
+    }
+}

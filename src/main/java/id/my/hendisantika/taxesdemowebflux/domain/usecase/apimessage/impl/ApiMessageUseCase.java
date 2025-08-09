@@ -2,6 +2,7 @@ package id.my.hendisantika.taxesdemowebflux.domain.usecase.apimessage.impl;
 
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.apimessage.IApiMessageUseCase;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,4 +24,13 @@ public class ApiMessageUseCase implements IApiMessageUseCase {
     private final IEventPublisherPort eventPublisherPort;
     private final IQueuePublisherPort queuePublisherPort;
     private final IMessageRepositoryPort messageRepositoryPort;
+
+    @Override
+    public Mono<String> sendMessageEvent(String message) {
+        return Mono.just(EventUtil.generateEvent(TYPE_EVENT, message))
+                .flatMap(event ->
+                        saveMessageRepository(event, "sendMessageEvent"))
+                .flatMap(eventPublisherPort::emit)
+                .thenReturn(message);
+    }
 }

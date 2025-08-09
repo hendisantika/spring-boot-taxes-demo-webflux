@@ -50,6 +50,19 @@ public class ApiMessageUseCase implements IApiMessageUseCase {
                         saveMessageRepository(event, "sendMessageEventOther"))
                 .flatMap(eventPublisherPort::emitOtherRouterKey)
                 .thenReturn(message);
+    }
 
+    private Mono<EventModel> saveMessageRepository(EventModel event, String name) {
+        var messageModel = MessageModel.builder()
+                .event(DomainEventModel.builder()
+                        .name(name)
+                        .eventId(event.getId())
+                        .data(event.getData())
+                        .build())
+                .message(event.getData().toString())
+                .status(MessageStatus.PENDING)
+                .build();
+        return this.messageRepositoryPort.saveMessage(messageModel)
+                .thenReturn(event);
     }
 }

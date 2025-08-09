@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +35,11 @@ public class ErrorStatusMapper {
 
     public ErrorStatusMapper addErrorMapping(ExceptionMessage exceptionMessage, HttpStatus httpStatus) {
         errorStatusMap.put(exceptionMessage, httpStatus);
+        return this;
+    }
+
+    public ErrorStatusMapper addErrorMappings(List<ExceptionMessage> exceptionMessageList, HttpStatus httpStatus) {
+        exceptionMessageList.forEach(e -> this.addErrorMapping(e, httpStatus));
         return this;
     }
 }

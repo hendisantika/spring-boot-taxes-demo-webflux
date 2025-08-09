@@ -5,6 +5,7 @@ import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessExcept
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ErrorList;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
@@ -70,5 +71,14 @@ public class ExceptionUtil {
                 .code(TechnicalExceptionMessage.TECHNICAL_SERVER_ERROR.getCode())
                 .message(throwable.getMessage())
                 .build());
+    }
+
+    public Throwable getRootCause(@NonNull final Throwable cause) {
+
+        final Throwable rootCause = cause.getCause();
+        if (rootCause != null) {
+            return getRootCause(rootCause);
+        }
+        return cause;
     }
 }

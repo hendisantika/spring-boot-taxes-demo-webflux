@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,5 +42,9 @@ public class ErrorStatusMapper {
     public ErrorStatusMapper addErrorMappings(List<ExceptionMessage> exceptionMessageList, HttpStatus httpStatus) {
         exceptionMessageList.forEach(e -> this.addErrorMapping(e, httpStatus));
         return this;
+    }
+
+    public HttpStatus getHttpStatus(ExceptionMessage exceptionMessage) {
+        return Optional.ofNullable(errorStatusMap.get(exceptionMessage)).orElse(defaultStatus);
     }
 }

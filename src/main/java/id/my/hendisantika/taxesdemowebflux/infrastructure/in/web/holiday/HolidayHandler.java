@@ -56,4 +56,15 @@ public class HolidayHandler {
                 .flatMap(ServerResponse.ok()::bodyValue)
                 .onErrorResume(Mono::error);
     }
+
+    public Mono<ServerResponse> getHolidayId(ServerRequest serverRequest) {
+        return Mono.just(serverRequest)
+                .map(rq -> serverRequest.pathVariable("id"))
+                .map(Integer::parseInt)
+                .flatMap(holidayUseCase::getHolidayById)
+                .map(HolidayMapper::buildResponseData)
+                .map(JsonApiDTO::new)
+                .flatMap(ServerResponse.ok()::bodyValue)
+                .onErrorResume(Mono::error);
+    }
 }

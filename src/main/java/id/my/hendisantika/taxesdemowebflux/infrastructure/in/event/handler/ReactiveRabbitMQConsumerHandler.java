@@ -1,8 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
 import jakarta.annotation.PostConstruct;
+import org.reactivecommons.api.domain.DomainEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -63,5 +66,13 @@ public class ReactiveRabbitMQConsumerHandler {
                 .doOnNext(event ->
                         logger.log(Level.INFO, "📥 Event receive listener: {0}", new Object[]{event})
                 ).subscribe();
+    }
+
+    private DomainEvent convertMessage(byte[] body) {
+        try {
+            return objectMapper.readValue(body, DomainEvent.class);
+        } catch (Exception e) {
+            throw new TechnicalException(e, TechnicalExceptionMessage.TECHNICAL_JSON_DESERIALIZE_EXCEPTION);
+        }
     }
 }

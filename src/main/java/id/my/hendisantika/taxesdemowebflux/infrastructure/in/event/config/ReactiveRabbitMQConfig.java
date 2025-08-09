@@ -3,7 +3,9 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config;
 import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -64,4 +66,13 @@ public class ReactiveRabbitMQConfig {
 //            LOGGER.error(FAIL_MSG, e);
 //        }
 //    }
+
+    @Bean
+    public ApplicationRunner rabbitQueueInitializer(RabbitAdmin rabbitAdmin) {
+        return args -> {
+            LOGGER.info("📌 Creating RabbitMQ queues before starting the application...");
+            rabbitAdmin.initialize(); // Ensures that queues and bindings are created before other beans are executed
+            LOGGER.info("✅ Colas de RabbitMQ creadas.");
+        };
+    }
 }

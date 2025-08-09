@@ -6,11 +6,16 @@ import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.Techni
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
+import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.RequestPredicates;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,5 +75,16 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
                 .addErrorMapping(TechnicalExceptionMessage.INVALID_HEADERS_EXCEPTION, HttpStatus.BAD_REQUEST)
                 .addErrorMapping(TechnicalExceptionMessage.TECHNICAL_JSON_EXCEPTION, HttpStatus.BAD_REQUEST)
                 .addErrorMappings(timeoutListError, HttpStatus.GATEWAY_TIMEOUT);
+    }
+
+    /**
+     * Gets the routing function to use for error handling.
+     *
+     * @param errorAttributes the error attributes to use for error handling
+     * @return the routing function to use for error handling
+     */
+    @Override
+    protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
+        return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
     }
 }

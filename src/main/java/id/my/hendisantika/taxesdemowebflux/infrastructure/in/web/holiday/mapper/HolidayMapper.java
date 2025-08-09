@@ -2,6 +2,7 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.mapper
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.HolidayModel;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.dto.HolidayResponseDTO;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.dto.HolidayUpdateRequestDTO;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -39,5 +40,12 @@ public class HolidayMapper {
                 holiday.getDate(),
                 holiday.getEnabled().intValue() == 1 ? "A" : "I"
         );
+    }
+
+    public static HolidayModel buildHolidayModel(HolidayUpdateRequestDTO holidayUpdate) {
+        return HolidayModel.builder()
+                .enabled(holidayUpdate.getState())
+                .id(holidayUpdate.getId())
+                .build();
     }
 }

@@ -4,6 +4,7 @@ import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BadRequestExce
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ErrorList;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import lombok.experimental.UtilityClass;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
@@ -37,5 +38,13 @@ public class ExceptionUtil {
         return error.toBuilder()
                 .domain(String.join(COLON, serverRequest.method().name(), serverRequest.path()))
                 .build();
+    }
+
+    public Mono<ErrorList.Error> buildErrorResponse(BadRequestException badRequestException) {
+        return Mono.just(ErrorList.Error.builder()
+                .reason(TechnicalExceptionMessage.BAD_REQUEST.getDescription())
+                .code(TechnicalExceptionMessage.BAD_REQUEST.getCode())
+                .message(badRequestException.getMessage())
+                .build());
     }
 }

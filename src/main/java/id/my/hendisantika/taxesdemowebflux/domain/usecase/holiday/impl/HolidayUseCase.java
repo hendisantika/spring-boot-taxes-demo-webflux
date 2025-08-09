@@ -18,4 +18,9 @@ import lombok.RequiredArgsConstructor;
 public class HolidayUseCase implements IHolidayUseCase {
 
     private final IHolidayRepositoryPort holidayRepositoryPort;
+
+    @Override
+    public Flux<HolidayModel> getHolidays() {
+        return holidayRepositoryPort.getHolidays();
+    }
 }

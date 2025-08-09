@@ -31,4 +31,9 @@ public class ErrorStatusMapper {
         this.defaultStatus = HttpStatus.valueOf(defaultStatus);
         this.errorStatusMap = new ConcurrentHashMap<>();
     }
+
+    public ErrorStatusMapper addErrorMapping(ExceptionMessage exceptionMessage, HttpStatus httpStatus) {
+        errorStatusMap.put(exceptionMessage, httpStatus);
+        return this;
+    }
 }

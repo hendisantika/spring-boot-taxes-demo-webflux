@@ -1,6 +1,7 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.mapper;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.HolidayModel;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.commons.JsonApiDTO;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.dto.HolidayResponseDTO;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.holiday.dto.HolidayUpdateRequestDTO;
 import lombok.experimental.UtilityClass;
@@ -47,5 +48,9 @@ public class HolidayMapper {
                 .enabled(holidayUpdate.getState())
                 .id(holidayUpdate.getId())
                 .build();
+    }
+
+    public static <T> JsonApiDTO<T> buildResponseData(T object) {
+        return new JsonApiDTO<>(object);
     }
 }

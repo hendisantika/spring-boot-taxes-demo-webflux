@@ -1,5 +1,6 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.util;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BadRequestException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import jakarta.validation.Validator;
@@ -38,5 +39,12 @@ public class RequestValidator {
                 .findFirst()
                 .map(this::buildBadRequestException)
                 .orElse(Mono.just(requestBody));
+    }
+
+    private <T> Mono<T> buildBadRequestException(ConstraintViolation<T> constraintViolation) {
+        String violationPath = constraintViolation.getPropertyPath().toString();
+        String violationMessage = constraintViolation.getMessage();
+        var exceptionMessage = String.format("%s: %s", violationPath, violationMessage);
+        return Mono.error(new BadRequestException(exceptionMessage));
     }
 }

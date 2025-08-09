@@ -45,4 +45,15 @@ public class HolidayHandler {
                 .flatMap(ServerResponse.ok()::bodyValue)
                 .onErrorResume(Mono::error);
     }
+
+    public Mono<ServerResponse> getHolidayExternal(ServerRequest serverRequest) {
+        return requestValidator.validateRequestBody(serverRequest, HolidayRequestDTO.class)
+                .flatMap(holidayRequest ->
+                        requestValidator.validateBody(holidayRequest)
+                                .thenReturn(holidayRequest))
+                .flatMap(holiday -> holidayExternUseCase.getHolidays(holiday.getYear()))
+                .map(HolidayMapper::buildResponseData)
+                .flatMap(ServerResponse.ok()::bodyValue)
+                .onErrorResume(Mono::error);
+    }
 }

@@ -55,4 +55,12 @@ public class ExceptionUtil {
                 .message(technicalException.getMessage())
                 .build());
     }
+
+    public Mono<ErrorList.Error> buildErrorResponse(BusinessException businessException) {
+        return Mono.just(ErrorList.Error.builder()
+                .reason(businessException.getBusinessExceptionMessage().getDescription())
+                .code(businessException.getBusinessExceptionMessage().getCode())
+                .message(businessException.getBusinessExceptionMessage().getMessage())
+                .build());
+    }
 }

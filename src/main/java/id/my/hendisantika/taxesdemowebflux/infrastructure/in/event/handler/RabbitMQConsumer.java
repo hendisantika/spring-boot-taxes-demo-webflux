@@ -1,6 +1,8 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.DomainEventModel;
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageModel;
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageStatus;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.api.domain.DomainEvent;
@@ -39,4 +41,15 @@ public class RabbitMQConsumer {
         ).then();
     }
 
+    private MessageModel getMessageModel(DomainEvent<DomainEventModel> eventDomainEvent) {
+        var data = eventDomainEvent.getData()
+                .toBuilder().name("RabbitListener:receiveMessage" + " :" + eventDomainEvent.getName())
+                .eventId(eventDomainEvent.getEventId())
+                .build();
+        return MessageModel.builder()
+                .message((String) eventDomainEvent.getData().getData())
+                .event(data)
+                .status(MessageStatus.PROCESSED)
+                .build();
+    }
 }

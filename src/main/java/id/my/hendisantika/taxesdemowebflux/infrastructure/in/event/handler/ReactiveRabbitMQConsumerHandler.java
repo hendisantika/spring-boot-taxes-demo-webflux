@@ -2,11 +2,13 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import reactor.rabbitmq.Receiver;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -39,5 +41,27 @@ public class ReactiveRabbitMQConsumerHandler {
         this.objectMapper = objectMapper;
         this.queueName = queueName;
         this.processMessageUseCase = processMessageUseCase;
+    }
+
+    @PostConstruct
+    public void listenMessages() {
+        logger.log(Level.INFO, "✅ Se activa listener para recibir los mensajes de de la cola {0}"
+                , new Object[]{queueName});
+        receiver.consumeAutoAck(queueName)
+                .doOnError(e -> System.err.println("Error al consumir mensajes " +
+                        "o Cola no existe: " + e.getMessage()))
+                .map(delivery -> convertMessage(delivery.getBody()))
+                /*.map(event-> {
+                    logger.log(Level.INFO, "📥 Event receive listener: {0}", new Object[]{event});
+                    return event;
+                })*/
+                .flatMap(domainEventModel -> {
+                    var messageModel = this.getMessageModel(domainEventModel);
+                    return this.processMessageUseCase.processMessage(messageModel)
+                            .thenReturn(domainEventModel);
+                })
+                .doOnNext(event ->
+                        logger.log(Level.INFO, "📥 Event receive listener: {0}", new Object[]{event})
+                ).subscribe();
     }
 }

@@ -47,4 +47,12 @@ public class ExceptionUtil {
                 .message(badRequestException.getMessage())
                 .build());
     }
+
+    public Mono<ErrorList.Error> buildErrorResponse(TechnicalException technicalException) {
+        return Mono.just(ErrorList.Error.builder()
+                .reason(technicalException.getTechnicalExceptionMessage().getDescription())
+                .code(technicalException.getTechnicalExceptionMessage().getCode())
+                .message(technicalException.getMessage())
+                .build());
+    }
 }

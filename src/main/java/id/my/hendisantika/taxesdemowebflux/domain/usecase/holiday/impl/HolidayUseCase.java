@@ -23,4 +23,11 @@ public class HolidayUseCase implements IHolidayUseCase {
     public Flux<HolidayModel> getHolidays() {
         return holidayRepositoryPort.getHolidays();
     }
+
+    @Override
+    public Mono<HolidayModel> getHolidayById(Integer id) {
+        return holidayRepositoryPort
+                .getHolidayById(id)
+                .switchIfEmpty(Mono.defer(() -> Mono.error(new DataNotFoundException())));
+    }
 }

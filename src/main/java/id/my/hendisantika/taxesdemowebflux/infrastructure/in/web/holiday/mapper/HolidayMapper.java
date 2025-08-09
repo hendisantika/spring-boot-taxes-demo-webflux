@@ -31,4 +31,13 @@ public class HolidayMapper {
                 )
                 .toList();
     }
+
+    public static HolidayResponseDTO buildResponseData(HolidayModel holiday) {
+        return new HolidayResponseDTO(
+                holiday.getId(),
+                holiday.getYear(),
+                holiday.getDate(),
+                holiday.getEnabled().intValue() == 1 ? "A" : "I"
+        );
+    }
 }

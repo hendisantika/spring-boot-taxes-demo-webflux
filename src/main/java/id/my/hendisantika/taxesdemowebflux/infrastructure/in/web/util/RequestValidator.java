@@ -1,8 +1,12 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.util;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,4 +25,10 @@ public class RequestValidator {
 
     private final Validator validator;
 
+    public <T> Mono<T> validateRequestBody(ServerRequest serverRequest, Class<T> clazz) {
+        return serverRequest.bodyToMono(clazz)
+                .switchIfEmpty(Mono.defer(() ->
+                        Mono.error(new TechnicalException(TechnicalExceptionMessage.TECHNICAL_JSON_EXCEPTION))))
+                .onErrorMap(e -> new TechnicalException(TechnicalExceptionMessage.TECHNICAL_JSON_EXCEPTION));
+    }
 }

@@ -1,9 +1,12 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.my.hendisantika.taxesdemowebflux.domain.model.events.DomainEventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageModel;
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageStatus;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
 import jakarta.annotation.PostConstruct;
 import org.reactivecommons.api.domain.DomainEvent;
@@ -84,5 +87,21 @@ public class ReactiveRabbitMQConsumerHandler {
         } catch (Exception e) {
             throw new TechnicalException(e, TechnicalExceptionMessage.TECHNICAL_JSON_DESERIALIZE_EXCEPTION);
         }
+    }
+
+    private MessageModel getMessageModel(DomainEvent eventDomainEvent) {
+        var dataEventModel = this.convertMessageModel((LinkedHashMap) eventDomainEvent.getData());
+
+        var domainEventModel = DomainEventModel.builder()
+                .name("Receiver::listenMessages" + " :" + eventDomainEvent.getName())
+                .eventId(eventDomainEvent.getEventId())
+                .data(eventDomainEvent.getData())
+                .build();
+
+        return MessageModel.builder()
+                .message((String) dataEventModel.getData())
+                .event(domainEventModel)
+                .status(MessageStatus.PROCESSED)
+                .build();
     }
 }

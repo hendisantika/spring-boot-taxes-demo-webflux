@@ -2,6 +2,8 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -20,4 +22,9 @@ public class ReactiveRabbitMQConfig {
     public static final String TLS_VERSION = "TLSv1.3";
     private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveRabbitMQConfig.class.getName());
     private static final String FAIL_MSG = "Error creating ConnectionFactoryProvider ";
+
+    @Bean
+    public String rabbitQueueName(@Value("${rabbitmq.queue-name}") final String queueName) {
+        return queueName;
+    }
 }

@@ -2,6 +2,10 @@ package id.my.hendisantika.taxesdemowebflux.domain.model.events.commons;
 
 import lombok.experimental.UtilityClass;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : taxes-demo-webflux
@@ -21,5 +25,9 @@ public class EventUtil {
     public static final String APPLICATION_JSON = "application/json";
     public static final String INVOKER = "taxes-demo";
     static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssX";
-    static final String AMERICA_ZONE_ID = "America/Bogota";
+    static final String AMERICA_ZONE_ID = "Asia/Jakarta";
+
+    public static String getEventDateTimeWithDefaultFormat() {
+        return ZonedDateTime.now(ZoneId.of(AMERICA_ZONE_ID)).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
 }

@@ -30,4 +30,12 @@ public class HolidayUseCase implements IHolidayUseCase {
                 .getHolidayById(id)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new DataNotFoundException())));
     }
+
+    @Override
+    public Mono<HolidayModel> updateHoliday(Integer id, HolidayModel holidayModel) {
+        return getHolidayById(id)
+                .map(h -> h.toBuilder().enabled(holidayModel.getEnabled()).build()
+                ).flatMap(holidayRepositoryPort::updateHoliday)
+                .onErrorResume(Mono::error);
+    }
 }

@@ -31,4 +31,12 @@ public class RequestValidator {
                         Mono.error(new TechnicalException(TechnicalExceptionMessage.TECHNICAL_JSON_EXCEPTION))))
                 .onErrorMap(e -> new TechnicalException(TechnicalExceptionMessage.TECHNICAL_JSON_EXCEPTION));
     }
+
+    public <T> Mono<T> validateBody(T requestBody) {
+        return this.validator.validate(requestBody)
+                .stream()
+                .findFirst()
+                .map(this::buildBadRequestException)
+                .orElse(Mono.just(requestBody));
+    }
 }

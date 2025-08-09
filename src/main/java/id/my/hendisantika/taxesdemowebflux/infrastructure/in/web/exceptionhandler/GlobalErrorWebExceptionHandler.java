@@ -135,4 +135,9 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
         return ExceptionUtil.buildErrorResponse(badRequestException)
                 .zipWith(Mono.just(errorStatusMapper.getHttpStatus(TechnicalExceptionMessage.BAD_REQUEST)));
     }
+
+    public Mono<Tuple2<ErrorList.Error, HttpStatus>> buildErrorResponse(TechnicalException technicalException) {
+        return ExceptionUtil.buildErrorResponse(technicalException)
+                .zipWith(Mono.just(errorStatusMapper.getHttpStatus(technicalException.getTechnicalExceptionMessage())));
+    }
 }

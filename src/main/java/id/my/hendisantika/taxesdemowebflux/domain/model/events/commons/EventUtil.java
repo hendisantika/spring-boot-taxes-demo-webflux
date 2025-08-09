@@ -45,4 +45,17 @@ public class EventUtil {
                 .data(eventData)
                 .build();
     }
+
+    public <T> EventModel<T> generateEvent(String type, T eventData, String eventId) {
+        return EventModel.<T>builder()
+                .id(eventId)
+                .invoker(INVOKER)
+                .type(type)
+                .time(getEventDateTimeWithDefaultFormat())
+                .dataContentType(APPLICATION_JSON)
+                .source(SOURCE)
+                .specVersion(SPEC_VERSION)
+                .data(eventData)
+                .build();
+    }
 }

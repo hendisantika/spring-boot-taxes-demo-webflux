@@ -2,6 +2,8 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.DomainEventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventsName;
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageModel;
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageStatus;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config.EventsProperties;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,18 @@ public class EventsHandler {
         return this.processMessageUseCase.processMessage(
                 this.getMessageModel(domainEventDomainEvent, "handlerTaxMessage")
         ).then();
+    }
+
+    private MessageModel getMessageModel(DomainEvent<DomainEventModel> eventDomainEvent,
+                                         String methodName) {
+        var data = eventDomainEvent.getData()
+                .toBuilder().name(methodName + " :" + eventDomainEvent.getName())
+                .eventId(eventDomainEvent.getEventId())
+                .build();
+        return MessageModel.builder()
+                .message((String) eventDomainEvent.getData().getData())
+                .event(data)
+                .status(MessageStatus.PROCESSED)
+                .build();
     }
 }

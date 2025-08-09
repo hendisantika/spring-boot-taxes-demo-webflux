@@ -1,10 +1,15 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.events.DomainEventModel;
+import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventsName;
 import id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage.IProcessMessageUseCase;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config.EventsProperties;
 import lombok.RequiredArgsConstructor;
+import org.reactivecommons.api.domain.DomainEvent;
 import org.reactivecommons.async.impl.config.annotations.EnableEventListeners;
+import reactor.core.publisher.Mono;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -25,4 +30,15 @@ public class EventsHandler {
     private static final Logger logger = Logger.getLogger(EventsHandler.class.getName());
     private final EventsProperties eventsProperties;
     private final IProcessMessageUseCase processMessageUseCase;
+
+    public Mono<Void> handlerTaxOtherEvent(DomainEvent<DomainEventModel> objectDomainEvent) {
+        logger.log(Level.INFO, "📬 Tienes un nuevo mensaje del evento:{0} y routekey: {1}, mensaje: {2}"
+                , new Object[]{EventsName.TAX_EVENT_OTHER
+                        , eventsProperties.getEvents().get(EventsName.TAX_EVENT_OTHER)
+                        , objectDomainEvent});
+        var messageModel = this.getMessageModel(objectDomainEvent, "handlerTaxOtherEvent");
+        return this.processMessageUseCase
+                .processMessage(messageModel)
+                .then();
+    }
 }

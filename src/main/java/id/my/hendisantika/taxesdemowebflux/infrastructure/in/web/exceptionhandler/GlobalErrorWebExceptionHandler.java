@@ -1,8 +1,14 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.exceptionhandler;
 
+import com.fasterxml.jackson.databind.util.ExceptionUtil;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BadRequestException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.BusinessExceptionMessage;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ErrorList;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ExceptionMessage;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
+import lombok.NonNull;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
@@ -15,10 +21,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,5 +97,37 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     @Override
     protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
         return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
+    }
+
+    /**
+     * Renders an error response for the given request.
+     *
+     * @param request the request to render an error response for
+     * @return a Mono of the server response for the error
+     */
+    private @NonNull Mono<ServerResponse> renderErrorResponse(final ServerRequest request) {
+
+        return Mono.just(request)
+                .map(this::getError)
+                .flatMap(Mono::error)
+                .onErrorResume(BadRequestException.class, this::buildErrorResponse)
+                .onErrorResume(TechnicalException.class, this::buildErrorResponse)
+                .onErrorResume(BusinessException.class, this::buildErrorResponse)
+                //.onErrorResume(RestConsumerException.class, this::buildErrorResponse)
+                .onErrorResume(this::buildErrorResponse)
+                .cast(Tuple2.class)
+                .map(errorTuple -> {
+                    var error = (ErrorList.Error) errorTuple.getT1();
+                    var httpStatus = (HttpStatus) errorTuple.getT2();
+                    error = ExceptionUtil.addDomain(request, error);
+                    return Tuples.of(error, httpStatus);
+                })
+                .flatMap(newTuple -> this.buildServerResponse(newTuple.getT1(),
+                        request, newTuple.getT2()))
+                .doAfterTerminate(() ->
+                        logger.log(Level.SEVERE, "data: {0}, request: {1}, logName: {2}",
+                                new Object[]{getError(request), request, LOG_CLASS_NAME})
+
+                );
     }
 }

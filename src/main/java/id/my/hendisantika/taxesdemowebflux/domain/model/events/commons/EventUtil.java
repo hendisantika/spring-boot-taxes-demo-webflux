@@ -1,10 +1,12 @@
 package id.my.hendisantika.taxesdemowebflux.domain.model.events.commons;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventModel;
 import lombok.experimental.UtilityClass;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,5 +31,18 @@ public class EventUtil {
 
     public static String getEventDateTimeWithDefaultFormat() {
         return ZonedDateTime.now(ZoneId.of(AMERICA_ZONE_ID)).format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+    }
+
+    public <T> EventModel<T> generateEvent(String type, T eventData) {
+        return EventModel.<T>builder()
+                .id(UUID.randomUUID().toString())
+                .invoker(INVOKER)
+                .type(type)
+                .time(getEventDateTimeWithDefaultFormat())
+                .dataContentType(APPLICATION_JSON)
+                .source(SOURCE)
+                .specVersion(SPEC_VERSION)
+                .data(eventData)
+                .build();
     }
 }

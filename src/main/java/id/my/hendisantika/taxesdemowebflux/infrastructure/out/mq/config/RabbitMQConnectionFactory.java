@@ -1,8 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config;
 
+import com.rabbitmq.client.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -22,4 +25,20 @@ public class RabbitMQConnectionFactory {
     public static final String TLS_VERSION = "TLSv1.3";
     private static final Logger LOGGER = LoggerFactory.getLogger(RabbitMQConnectionFactory.class.getName());
     private static final String FAIL_MSG = "Error creating ConnectionFactoryProvider ";
+
+    @Bean
+    //@Profile({ "local" })
+    public ConnectionFactory getConnectionFactoryLocal(@Value("${rabbitmq.password}") final String pass,
+                                                       @Value("${rabbitmq.port}") final Integer port,
+                                                       @Value("${rabbitmq.username}") final String username,
+                                                       @Value("${rabbitmq.host}") final String hostname,
+                                                       @Value("${rabbitmq.virtual-host}") final String virtualHost) {
+        var secret = new RabbitMQConnectionProperties();
+        secret.setPort(port);
+        secret.setUsername(username);
+        secret.setPassword(pass);
+        secret.setHostname(hostname);
+        secret.setVirtualhost(virtualHost);
+        return buildConnectionFactoryProvider(secret);
+    }
 }

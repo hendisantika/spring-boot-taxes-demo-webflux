@@ -39,4 +39,10 @@ public class ReactiveEventPublisher implements IEventPublisherPort {
                 ROUTING_KEY, event.getId(), event);
         return emitDomainEvent(domainEvent);
     }
+
+    @Override
+    public <T> Mono<Void> emit(String name, String eventId, T data) {
+        DomainEvent<T> domainEvent = new DomainEvent<>(name, eventId, data);
+        return emitDomainEvent(domainEvent);
+    }
 }

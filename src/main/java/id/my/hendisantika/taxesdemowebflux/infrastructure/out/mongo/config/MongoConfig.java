@@ -1,6 +1,12 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mongo.config;
 
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
@@ -54,4 +60,39 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration {
     protected boolean autoIndexCreation() {
         return this.autoIndexCreation;
     }
+
+    @Bean
+    @Override
+    public MongoClient reactiveMongoClient() {
+        // MongoDB server address
+        ServerAddress serverAddress = new ServerAddress(this.host, this.port);
+        // Authentication with `authenticationDatabase`
+        MongoCredential credential = MongoCredential.createCredential(
+                this.username, this.authenticationDatabase, this.password.toCharArray()
+        );
+        // MongoDB client configuration
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyToClusterSettings(builder -> builder.hosts(List.of(serverAddress)))
+                .credential(credential) // Configura autenticación
+                .build();
+        return MongoClients.create(settings);
+    }
+
+//    @Bean
+//    @Primary
+//    public ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient) {
+//        return new ReactiveMongoTemplate(new SimpleReactiveMongoDatabaseFactory(mongoClient, this.database));
+//    }
+
+    //remove '_class’ field
+//    @Bean
+//    @Primary
+//    public ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient) {
+//        ReactiveMongoTemplate template = new ReactiveMongoTemplate(mongoClient, this.database);
+//        MappingMongoConverter converter = (MappingMongoConverter) template.getConverter();
+//        converter.setTypeMapper(new DefaultMongoTypeMapper(null));
+//        converter.afterPropertiesSet();
+//        System.out.println("MongoDB configurado sin campo _class");
+//        return template;
+//    }
 }

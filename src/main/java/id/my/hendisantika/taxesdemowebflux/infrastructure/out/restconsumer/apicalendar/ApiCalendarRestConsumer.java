@@ -1,18 +1,25 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.apicalendar;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.HolidayExternModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.port.IHolidayExternRestPort;
 import io.netty.channel.ChannelOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,4 +67,44 @@ public class ApiCalendarRestConsumer implements IHolidayExternRestPort {
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
                 .responseTimeout(Duration.ofMillis(properties.getResponseTimeout()));
     }
+
+    @Override
+    public Mono<List<HolidayExternModel>> getHolidays(String year) {
+        return webClient.get()
+                .uri(properties.getHoliday() + "?country=CO&year=" + year)
+                .headers(ApiCalendarRequestBuilder::addCustomHeaders)
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, ClientResponse::createException)
+                .toEntity(new ParameterizedTypeReference<List<HolidayExternModel>>() {
+                })
+                .filter(HttpEntity::hasBody)
+                .map(HttpEntity::getBody)
+                .onErrorMap(error -> MicroserviceErrorHandler.handleError(error, generateErrorMap))
+                ;
+    }
+
+//    @Override
+//    public Mono<FileInformation> getDownloadFileURL(Map<String, String> headers,
+//                                                    DownloadFile downloadFile, String dateTime) {
+//        log.info("/downloadFormat Requesting base Distribution router was: {}", properties.getBaseUrl());
+//        log.info("/downloadFormat Requesting path: {}", properties.getDownloadFile());
+//        log.info("/downloadFormat Requesting headers: {}", headers);
+//        var request= DistributionRouterRequestBuilder.buildFileRequestDTO(downloadFile);
+//        log.info("/downloadFormat Requesting body: {}", request);
+//
+//        return webClient.post()
+//                .uri(properties.getDownloadFile())
+//                .headers(httpHeaders -> addCustomHeaders(httpHeaders, headers
+//                        , dateTime, request.getData().getCustomTemplate().getTransactionCode()))
+//                .bodyValue(request)
+//                .retrieve()
+//                .onStatus(HttpStatusCode::isError, ClientResponse::createException)
+//                .toEntity(new ParameterizedTypeReference<JsonApiDTO<FileInformationResponseDTO>>() {})
+//                .filter(HttpEntity::hasBody)
+//                .map(HttpEntity::getBody)
+//                .map(JsonApiDTO::getData)
+//                .onErrorMap(error -> MicroserviceErrorHandler.handleError(error, generateErrorMap))
+//                .map(DistributionRouterMapper::toFileInformation);
+//
+//    }
 }

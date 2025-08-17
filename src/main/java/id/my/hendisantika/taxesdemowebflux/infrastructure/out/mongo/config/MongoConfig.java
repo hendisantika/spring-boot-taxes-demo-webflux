@@ -6,6 +6,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -120,4 +121,28 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
         return new ReactiveMongoTemplate(factory, converter);
     }
+
+    @Bean
+    public CommandLineRunner testMongoConnection(ReactiveMongoTemplate reactiveMongoTemplate) {
+        return args -> {
+            reactiveMongoTemplate.getMongoDatabase()
+                    .doOnNext(db -> System.out.println("MongoDB Conectado: " + db.getName()))
+                    .subscribe();
+        };
+    }
+
+//    @Bean
+//    public MongoCustomConversions mongoCustomConversions() {
+//        return new MongoCustomConversions(Collections.emptyList());
+//    }
+//    @Bean
+//    public MappingMongoConverter mappingMongoConverter(MongoDatabaseFactory factory,
+//                                                       MongoMappingContext context,
+//                                                       MongoCustomConversions conversions) {
+//        DbRefResolver dbRefResolver = new DefaultDbRefResolver(factory);
+//        MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, context);
+//        converter.setCustomConversions(conversions);
+//        converter.setTypeMapper(new DefaultMongoTypeMapper(null));
+//        return converter;
+//    }
 }

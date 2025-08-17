@@ -1,7 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,5 +31,14 @@ public class RestConsumerConfig {
         this.defaultConnectionTimeout = connectionTimeout;
         this.defaultReadTimeout = defaultReadTimeout;
         this.defaultWriteTimeout = defaultWriteTimeout;
+    }
+
+
+    @Bean(name = "baseWebClient")
+    public WebClient getbaseWebClient(WebClient.Builder builder) {
+        return builder
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                .clientConnector(getClientHttpConnector(HttpClient.create()))
+                .build();
     }
 }

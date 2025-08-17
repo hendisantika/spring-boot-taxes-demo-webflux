@@ -6,6 +6,7 @@ import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.port.IHolidayRep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,4 +32,9 @@ public class HolidayRepositoryAdapter implements IHolidayRepositoryPort {
                 .map(holiday -> objectMapper.map(holiday, HolidayModel.class));
     }
 
+    @Override
+    public Mono<HolidayModel> getHolidayById(Integer id) {
+        return holidayRepository.findById(id.longValue())
+                .map(holiday -> objectMapper.map(holiday, HolidayModel.class));
+    }
 }

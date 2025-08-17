@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : taxes-demo-webflux
@@ -35,6 +37,15 @@ public class HolidayRepositoryAdapter implements IHolidayRepositoryPort {
     @Override
     public Mono<HolidayModel> getHolidayById(Integer id) {
         return holidayRepository.findById(id.longValue())
+                .map(holiday -> objectMapper.map(holiday, HolidayModel.class));
+    }
+
+    @Override
+    public Mono<HolidayModel> updateHoliday(HolidayModel holidayModel) {
+        return Mono.just(holidayModel)
+                .map(h -> h.toBuilder().updatedAt(LocalDateTime.now()).build())
+                .map(holiday -> objectMapper.map(holiday, HolidayEntity.class))
+                .flatMap(holidayRepository::save)
                 .map(holiday -> objectMapper.map(holiday, HolidayModel.class));
     }
 }

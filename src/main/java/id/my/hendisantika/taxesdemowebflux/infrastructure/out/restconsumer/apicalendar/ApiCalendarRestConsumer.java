@@ -1,6 +1,7 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.apicalendar;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.port.IHolidayExternRestPort;
+import io.netty.channel.ChannelOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,7 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -50,5 +53,11 @@ public class ApiCalendarRestConsumer implements IHolidayExternRestPort {
                 "395", new TransactionTimeExpirationException(),
                 "394", new DataCompanyException()*/
         );
+    }
+
+    private HttpClient setUpHttpClient() {
+        return HttpClient.create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout())
+                .responseTimeout(Duration.ofMillis(properties.getResponseTimeout()));
     }
 }

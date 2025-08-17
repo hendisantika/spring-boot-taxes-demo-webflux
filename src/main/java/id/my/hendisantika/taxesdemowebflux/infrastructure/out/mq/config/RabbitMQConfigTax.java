@@ -1,8 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config;
 
+import com.rabbitmq.client.ConnectionFactory;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config.ReactiveRabbitMQConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,5 +36,14 @@ public class RabbitMQConfigTax {
     public Queue queue(@Value("${rabbitmq.queue-name}") final String queueName) {
         LOGGER.info("\uD83D\uDCCC Creando cola de RabbitMQ antes de iniciar la aplicación...{}", queueName);
         return new Queue(queueName, true);
+    }
+
+    @Order(2)
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
+                                         Jackson2JsonMessageConverter converter) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(converter); // Aplica el convertidor
+        return template;
     }
 }

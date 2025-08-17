@@ -1,10 +1,13 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config.events;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.port.IEventPublisherPort;
 import lombok.RequiredArgsConstructor;
+import org.reactivecommons.api.domain.DomainEvent;
 import org.reactivecommons.api.domain.DomainEventBus;
 import org.reactivecommons.async.impl.config.annotations.EnableDomainEventBus;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.logging.Logger;
 
@@ -30,4 +33,10 @@ public class ReactiveEventPublisher implements IEventPublisherPort {
     private static final String LOG_CLASS_NAME = ReactiveEventPublisher.class.getName();
     private final DomainEventBus domainEventBus;
 
+    @Override
+    public <T> Mono<Void> emit(EventModel<T> event) {
+        DomainEvent<EventModel<T>> domainEvent = new DomainEvent<>(
+                ROUTING_KEY, event.getId(), event);
+        return emitDomainEvent(domainEvent);
+    }
 }

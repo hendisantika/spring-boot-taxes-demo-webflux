@@ -46,4 +46,9 @@ public class RabbitMQConfigTax {
         template.setMessageConverter(converter); // Aplica el convertidor
         return template;
     }
+
+    @Bean
+    public Jackson2JsonMessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
 }

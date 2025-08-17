@@ -2,6 +2,8 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config.events;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.port.IEventPublisherPort;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.api.domain.DomainEvent;
 import org.reactivecommons.api.domain.DomainEventBus;
@@ -9,6 +11,7 @@ import org.reactivecommons.async.impl.config.annotations.EnableDomainEventBus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -51,5 +54,17 @@ public class ReactiveEventPublisher implements IEventPublisherPort {
         DomainEvent<EventModel<T>> domainEvent = new DomainEvent<>(
                 ROUTING_KEY_2, event.getId(), event);
         return emitDomainEvent(domainEvent);
+    }
+
+    private <T> Mono<Void> emitDomainEvent(DomainEvent<T> domainEvent) {
+        return Mono.from(domainEventBus.emit(domainEvent))
+                .doAfterTerminate(() ->
+                        logger.log(Level.INFO, "EventId: {0}, name: {1}, class: {2} , data: {3}",
+                                new Object[]{domainEvent.getEventId()
+                                        , domainEvent.getName()
+                                        , LOG_CLASS_NAME
+                                        , domainEvent.getData()}))
+                .onErrorMap(Exception.class, e ->
+                        new TechnicalException(e, TechnicalExceptionMessage.REACTIVE_EVENTS_GATEWAY));
     }
 }

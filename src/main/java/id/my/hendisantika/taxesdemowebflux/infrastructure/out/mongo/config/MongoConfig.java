@@ -8,7 +8,14 @@ import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.NoOpDbRefResolver;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
 /**
@@ -95,4 +102,22 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration {
 //        System.out.println("MongoDB configurado sin campo _class");
 //        return template;
 //    }
+    @Bean
+    @Primary
+    public ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient) {
+        // Create reactive factory
+        SimpleReactiveMongoDatabaseFactory factory = new SimpleReactiveMongoDatabaseFactory(
+                mongoClient, getDatabaseName());
+        // Create custom converter
+        MongoMappingContext mappingContext = new MongoMappingContext();
+        mappingContext.setAutoIndexCreation(autoIndexCreation());
+        mappingContext.afterPropertiesSet();
+        // Configure converter without _class
+        MappingMongoConverter converter = new MappingMongoConverter(
+                NoOpDbRefResolver.INSTANCE, mappingContext);
+        converter.setTypeMapper(new DefaultMongoTypeMapper(null));
+        converter.afterPropertiesSet();
+
+        return new ReactiveMongoTemplate(factory, converter);
+    }
 }

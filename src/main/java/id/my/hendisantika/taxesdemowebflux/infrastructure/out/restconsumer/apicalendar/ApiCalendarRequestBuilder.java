@@ -2,6 +2,9 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.apic
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpHeaders;
+
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,4 +19,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiCalendarRequestBuilder {
+    static void addCustomHeaders(HttpHeaders httpHeaders) {
+        httpHeaders.add("date", new Date().toString());
+    }
 }

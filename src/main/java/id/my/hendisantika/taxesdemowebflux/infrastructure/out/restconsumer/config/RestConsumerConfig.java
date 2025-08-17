@@ -1,11 +1,18 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.config;
 
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.reactive.ClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+
+import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,5 +47,16 @@ public class RestConsumerConfig {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 .clientConnector(getClientHttpConnector(HttpClient.create()))
                 .build();
+    }
+
+    private ClientHttpConnector getClientHttpConnector(HttpClient client) {
+        return new ReactorClientHttpConnector(client
+                .compress(true)
+                .keepAlive(true)
+                .option(CONNECT_TIMEOUT_MILLIS, defaultConnectionTimeout)
+                .doOnConnected(connection -> {
+                    connection.addHandlerLast(new ReadTimeoutHandler(defaultReadTimeout, MILLISECONDS));
+                    connection.addHandlerLast(new WriteTimeoutHandler(defaultWriteTimeout, MILLISECONDS));
+                }));
     }
 }

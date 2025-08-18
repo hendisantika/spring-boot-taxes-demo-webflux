@@ -4,11 +4,13 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMessage;
 import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -75,6 +77,14 @@ public class WebExchangeHelper {
         return Map.of(
                 TechnicalLogConstants.BODY, JsonSerializerHelper.getBodyAsObject(responseBody),
                 TechnicalLogConstants.HEADERS, responseHeaders.toSingleValueMap()
+        );
+    }
+
+    public static Map<String, Object> buildErrorResponseMap(WebClientRequestException exception, Throwable rootCause) {
+        return Map.of(
+                TechnicalLogConstants.BODY, Objects.requireNonNullElse(exception.getMessage(), TechnicalLogConstants.EMPTY),
+                TechnicalLogConstants.HEADERS, exception.getHeaders().toSingleValueMap(),
+                TechnicalLogConstants.CAUSE, Objects.requireNonNullElse(rootCause.getMessage(), TechnicalLogConstants.EMPTY)
         );
     }
 }

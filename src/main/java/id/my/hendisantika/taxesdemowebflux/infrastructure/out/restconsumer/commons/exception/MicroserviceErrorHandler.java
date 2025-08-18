@@ -56,4 +56,19 @@ public class MicroserviceErrorHandler {
                             MicroserviceErrorHandler::handleResponseError),
                     entry(WebClientResponseException.class, MicroserviceErrorHandler::handleResponseError)
             );
+
+    /**
+     * Method to handle the exceptions that may occur in the communication with a microservice
+     * The method receives an exception and looks for it in the map of exceptions (ERROR_MAP).
+     * If the exception is not found in the map, a default RestConsumerException is thrown.
+     *
+     * @param error        - Exception to be handled
+     * @param errorCodeMap - Map of errors that need to be handled with specific exceptions
+     * @return Exception - Exception to be returned
+     */
+    public static Exception handleError(Throwable error, Map<String, Exception> errorCodeMap) {
+        return ERROR_MAP
+                .getOrDefault(error.getClass(), (ex, map) -> RestConsumerException.buildException(ex))
+                .apply(error, errorCodeMap);
+    }
 }

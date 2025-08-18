@@ -172,4 +172,12 @@ public class WebExchangeHelper {
                 .map(HttpHeaders::toSingleValueMap)
                 .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
     }
+
+    private static Map<String, String> getRequestHeader(ServerWebExchange exchange) {
+        return Optional.ofNullable(exchange)
+                .map(ServerWebExchange::getRequest)
+                .map(HttpMessage::getHeaders)
+                .map(HttpHeaders::toSingleValueMap)
+                .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
+    }
 }

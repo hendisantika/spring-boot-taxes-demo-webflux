@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -59,5 +60,13 @@ public class WebExchangeHelper {
         return Optional.ofNullable(exchange)
                 .map(ex -> ex.getAttribute(name.getName()))
                 .orElse(LogConstantHelper.EMPTY_JSON.getName());
+    }
+
+    public static Map<String, Object> buildRequestMap(ClientRequest request, String requestBody) {
+        var requestHeaders = request.headers();
+        return Map.of(
+                TechnicalLogConstants.BODY, JsonSerializerHelper.getBodyAsObject(requestBody),
+                TechnicalLogConstants.HEADERS, requestHeaders.toSingleValueMap()
+        );
     }
 }

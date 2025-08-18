@@ -163,4 +163,13 @@ public class WebExchangeHelper {
                 .map(HttpHeaders::toSingleValueMap)
                 .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
     }
+
+    private static Map<String, String> getResponseHeader(ServerRequest serverRequest) {
+        return Optional.ofNullable(serverRequest)
+                .map(ServerRequest::exchange)
+                .map(ServerWebExchange::getResponse)
+                .map(HttpMessage::getHeaders)
+                .map(HttpHeaders::toSingleValueMap)
+                .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
+    }
 }

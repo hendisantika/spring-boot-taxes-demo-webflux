@@ -2,10 +2,14 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.comm
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.reactive.ClientHttpRequestDecorator;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -93,5 +97,37 @@ public class RestClientFilterFunctionLog implements ExchangeFilterFunction {
     private void writeErrorLog(ClientRequest request, String bodyRequest, WebClientRequestException error) {
         logger.log(Level.SEVERE, "request: {0}, bodyRequest: {1} , error: {2}, componentName: {3}",
                 new Object[]{request, bodyRequest, error, componentName});
+    }
+
+    public static class ClientDecorator extends ClientHttpRequestDecorator {
+        private final StringBuilder requestString;
+
+        public ClientDecorator(ClientHttpRequest outputMessage, StringBuilder requestString) {
+            super(outputMessage);
+            this.requestString = requestString;
+        }
+
+        @Override
+        @NonNull
+        public Mono<Void> writeWith(@NonNull Publisher<? extends DataBuffer> body) {
+
+            return DataBufferUtils.join(body)
+                    .flatMap(originalBuffer -> {
+                        var bufferCopy = new byte[originalBuffer.readableByteCount()];
+                        originalBuffer.read(bufferCopy);
+
+                        // Create a new DataBuffer from the copied byte array
+                        DataBufferFactory bufferFactory = originalBuffer.factory();
+                        DataBuffer buffer = bufferFactory.wrap(bufferCopy);
+
+                        byte[] requestBodyBytes = bufferCopy.clone();
+                        var requestBody = new String(requestBodyBytes, StandardCharsets.UTF_8);
+                        requestString.append(requestBody);
+
+                        // Write the modified buffer to the output message
+                        return super.writeWith(Mono.just(buffer));
+                    });
+        }
+
     }
 }

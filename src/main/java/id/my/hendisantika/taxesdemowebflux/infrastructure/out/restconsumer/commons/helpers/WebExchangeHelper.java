@@ -116,4 +116,10 @@ public class WebExchangeHelper {
                 .orElse(Collections.emptyMap())
                 .getOrDefault("id", TechnicalLogConstants.EMPTY);
     }
+
+    public static Map<String, Object> getMessage(ServerWebExchange exchange) {
+        return Map.of(
+                LogConstantHelper.REQUEST.getName(), getRequest(exchange),
+                LogConstantHelper.RESPONSE.getName(), getResponse(exchange));
+    }
 }

@@ -2,6 +2,7 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.comm
 
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpMessage;
+import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -46,5 +47,11 @@ public class WebExchangeHelper {
 
     public static List<String> getTagList(String channel, String appVersion) {
         return List.of(channel, formatAppVersion(appVersion));
+    }
+
+    public static List<String> getTagList(ClientRequest clientRequest) {
+        String host = clientRequest.url().getHost();
+        String method = clientRequest.method().name();
+        return List.of(host, method);
     }
 }

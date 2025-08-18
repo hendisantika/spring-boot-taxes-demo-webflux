@@ -39,4 +39,7 @@ public class WebExchangeHelper {
         return serverRequest.attribute(name).orElse(LogConstantHelper.EMPTY_STRING.getName());
     }
 
+    private static String formatAppVersion(String appVersion) {
+        return String.join(" ", LogConstantHelper.APP_VERSION.getName(), appVersion);
+    }
 }

@@ -34,4 +34,9 @@ public class WebExchangeHelper {
                 .map(headers -> headers.getFirst(name.getName()))
                 .orElse(LogConstantHelper.EMPTY_STRING.getName());
     }
+
+    private static Object getAttribute(ServerRequest serverRequest, String name) {
+        return serverRequest.attribute(name).orElse(LogConstantHelper.EMPTY_STRING.getName());
+    }
+
 }

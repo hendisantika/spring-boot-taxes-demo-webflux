@@ -3,6 +3,8 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.comm
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -55,5 +57,15 @@ public class RestClientFilterFunctionLog implements ExchangeFilterFunction {
                     writeErrorLog(clientRequest, requestSb.toString(), ex);
                     return Mono.error(ex);
                 });
+    }
+
+    /**
+     * Create a default DataBuffer when the response body is empty
+     *
+     * @return DataBuffer with empty body
+     */
+    private DataBuffer createDefaultDataBuffer() {
+        DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
+        return dataBufferFactory.wrap(new byte[0]);
     }
 }

@@ -13,6 +13,13 @@ spring:
     add-properties: false
   profiles:
     active: ${ENV:local}
+  docker:
+    compose:
+      enabled: true
+      file: docker-compose.yml
+      lifecycle-management: start_and_stop
+      profiles:
+        active: [ ]
   #r2dbc:
   #  url: ""  # Desactiva la configuraci�n autom�tica
 management:

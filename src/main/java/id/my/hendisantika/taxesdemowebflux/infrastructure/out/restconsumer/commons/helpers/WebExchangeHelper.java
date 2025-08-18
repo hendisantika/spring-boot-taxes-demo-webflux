@@ -1,5 +1,6 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.helpers;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessException;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMessage;
@@ -121,5 +122,19 @@ public class WebExchangeHelper {
         return Map.of(
                 LogConstantHelper.REQUEST.getName(), getRequest(exchange),
                 LogConstantHelper.RESPONSE.getName(), getResponse(exchange));
+    }
+
+    public static Map<String, Object> getMessage(Throwable error, ServerRequest serverRequest) {
+        if (error instanceof BusinessException) {
+            return Map.of(
+                    LogConstantHelper.REQUEST.getName(), getRequest(serverRequest),
+                    LogConstantHelper.RESPONSE.getName(), getResponse(serverRequest)
+            );
+        }
+        return Map.of(
+                LogConstantHelper.CAUSE.getName(), TechMessageHelper.getErrorObjectMessage(error),
+                LogConstantHelper.REQUEST.getName(), getRequest(serverRequest),
+                LogConstantHelper.RESPONSE.getName(), getResponse(serverRequest)
+        );
     }
 }

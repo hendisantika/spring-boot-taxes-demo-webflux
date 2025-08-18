@@ -87,4 +87,11 @@ public class WebExchangeHelper {
                 TechnicalLogConstants.CAUSE, Objects.requireNonNullElse(rootCause.getMessage(), TechnicalLogConstants.EMPTY)
         );
     }
+
+    public static String getFirstHeader(ServerRequest request, String name) {
+        return Optional.ofNullable(request)
+                .map(ServerRequest::headers)
+                .map(headers -> headers.firstHeader(name))
+                .orElse(TechnicalLogConstants.EMPTY);
+    }
 }

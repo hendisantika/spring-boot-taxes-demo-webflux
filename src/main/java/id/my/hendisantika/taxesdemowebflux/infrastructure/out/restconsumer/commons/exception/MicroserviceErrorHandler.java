@@ -106,4 +106,22 @@ public class MicroserviceErrorHandler {
                     TechnicalExceptionMessage.ERROR_RESPONSE_COULD_NOT_BE_PARSED);
         }
     }
+
+    /**
+     * Method to propagate the error returned by a microservice.
+     * Build a RestConsumerException with the error returned by the microservice.
+     *
+     * @param firstError - Error returned by the microservice
+     * @param httpStatus - Http status of the response
+     * @return RestConsumerException - Exception to be returned
+     */
+    private static RestConsumerException propagateError(ErrorDTO firstError, String httpStatus) {
+        final var restConsumerMessage = RestConsumerExceptionMessage.builder()
+                .code(firstError.getCode())
+                .description(firstError.getReason())
+                .message(firstError.getMessage())
+                .httpStatus(httpStatus)
+                .build();
+        return new RestConsumerException(restConsumerMessage);
+    }
 }

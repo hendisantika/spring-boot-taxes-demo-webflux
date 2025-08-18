@@ -94,4 +94,10 @@ public class WebExchangeHelper {
                 .map(headers -> headers.firstHeader(name))
                 .orElse(TechnicalLogConstants.EMPTY);
     }
+
+    public static List<String> getTagList(ServerRequest request) {
+        String host = request.uri().getHost();
+        String method = request.method().name();
+        return List.of(host, method);
+    }
 }

@@ -9,7 +9,10 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -202,5 +205,10 @@ public class WebExchangeHelper {
                 LogConstantHelper.HEADERS.getName(), getResponseHeader(serverRequest),
                 LogConstantHelper.BODY.getName(), getAttribute(serverRequest, LogConstantHelper.RESPONSE_BODY.getName())
         );
+    }
+
+    public static String getTimeStampFormatted(Long currentTimeMillis) {
+        var dateFormat = new SimpleDateFormat(LogConstantHelper.TIME_PATTERN.getName());
+        return dateFormat.format(Date.from(Instant.ofEpochMilli(currentTimeMillis)));
     }
 }

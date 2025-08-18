@@ -5,6 +5,7 @@ import org.springframework.http.HttpMessage;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,5 +42,9 @@ public class WebExchangeHelper {
 
     private static String formatAppVersion(String appVersion) {
         return String.join(" ", LogConstantHelper.APP_VERSION.getName(), appVersion);
+    }
+
+    public static List<String> getTagList(String channel, String appVersion) {
+        return List.of(channel, formatAppVersion(appVersion));
     }
 }

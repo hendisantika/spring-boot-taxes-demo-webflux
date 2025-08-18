@@ -80,4 +80,13 @@ public class RestClientFilterFunctionLog implements ExchangeFilterFunction {
         logger.log(Level.INFO, "Method: {0}, URI: {1}, techMsg: {2} , componentName: {3}",
                 new Object[]{request.method(), request.url(), techMsg, componentName});
     }
+
+    private void writeErrorLog(ClientRequest request, DataBuffer bodyResponse, StringBuilder bodyRequest,
+                               HttpHeaders responseHeaders) {
+        final Map<String, Object> techMsg = WebExchangeHelper.getTechMessage(request, bodyRequest.toString(),
+                bodyResponse.toString(StandardCharsets.UTF_8), responseHeaders);
+
+        logger.log(Level.SEVERE, "request: {0}, techMsg: {1} , componentName: {2}",
+                new Object[]{request, techMsg, componentName});
+    }
 }

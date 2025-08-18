@@ -155,4 +155,12 @@ public class WebExchangeHelper {
                                 getAttribute(serverRequest, LogConstantHelper.REQUEST_BODY.getName())))
         );
     }
+
+    private static Map<String, String> getResponseHeader(ServerWebExchange exchange) {
+        return Optional.ofNullable(exchange)
+                .map(ServerWebExchange::getResponse)
+                .map(HttpMessage::getHeaders)
+                .map(HttpHeaders::toSingleValueMap)
+                .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
+    }
 }

@@ -54,4 +54,10 @@ public class WebExchangeHelper {
         String method = clientRequest.method().name();
         return List.of(host, method);
     }
+
+    private static Object getAttributeFromExchange(ServerWebExchange exchange, LogConstantHelper name) {
+        return Optional.ofNullable(exchange)
+                .map(ex -> ex.getAttribute(name.getName()))
+                .orElse(LogConstantHelper.EMPTY_JSON.getName());
+    }
 }

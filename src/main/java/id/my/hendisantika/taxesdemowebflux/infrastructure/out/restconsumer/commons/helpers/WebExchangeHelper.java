@@ -180,4 +180,12 @@ public class WebExchangeHelper {
                 .map(HttpHeaders::toSingleValueMap)
                 .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
     }
+
+    private static Map<String, String> getRequestHeader(ServerRequest serverRequest) {
+        return Optional.ofNullable(serverRequest)
+                .map(ServerRequest::headers)
+                .map(ServerRequest.Headers::asHttpHeaders)
+                .map(HttpHeaders::toSingleValueMap)
+                .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
+    }
 }

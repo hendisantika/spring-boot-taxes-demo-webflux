@@ -188,4 +188,12 @@ public class WebExchangeHelper {
                 .map(HttpHeaders::toSingleValueMap)
                 .orElse(Map.of(LogConstantHelper.EMPTY_STRING.getName(), LogConstantHelper.EMPTY_STRING.getName()));
     }
+
+    private static Map<String, Object> getResponse(ServerWebExchange exchange) {
+        return Map.of(
+                LogConstantHelper.HEADERS.getName(), getResponseHeader(exchange),
+                LogConstantHelper.BODY.getName(), JsonSerializerHelper
+                        .getBodyAsObject(getAttributeFromExchange(exchange, LogConstantHelper.RESPONSE_BODY))
+        );
+    }
 }

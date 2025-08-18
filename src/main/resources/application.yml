@@ -14,7 +14,7 @@ spring:
   profiles:
     active: ${ENV:local}
   #r2dbc:
-  #  url: ""  # Desactiva la configuración automática
+  #  url: ""  # Desactiva la configuraciï¿½n automï¿½tica
 management:
   endpoints:
     web:
@@ -42,15 +42,15 @@ logging:
 r2dbc:
   mysql:
     #url: ${MYSQL_URL:r2dbc:mysql://localhost:3306/taxes_Demo}
-    username: ${MYSQL_USER:user}
-    password: ${MYSQL_PASSWORD:demo}
+    username: ${MYSQL_USER:yu71}
+    password: ${MYSQL_PASSWORD:53cret}
     port: ${MYSQL_PORT:3306}
     host: ${MYSQL_HOST:localhost}
     database: ${MYSQL_DATABASE:taxes_Demo}
     pool:
-      initial-size: 5  # Número inicial de conexiones en el pool
-      max-size: 20      # Número máximo de conexiones en el pool
-      max-idle-time: 30m # Tiempo máximo de inactividad de una conexión
+      initial-size: 5  # Nï¿½mero inicial de conexiones en el pool
+      max-size: 20      # Nï¿½mero mï¿½ximo de conexiones en el pool
+      max-idle-time: 30m # Tiempo mï¿½ximo de inactividad de una conexiï¿½n
       validation-query: "SELECT 1" # Consulta para validar conexiones
 
 no-sql:

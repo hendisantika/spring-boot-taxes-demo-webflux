@@ -1,1 +1,54 @@
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:9.4.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 53cret
+      MYSQL_DATABASE: taxes_db
+      MYSQL_USER: yu71
+      MYSQL_PASSWORD: 53cret
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+
+volumes:
+  mongodb_data:
+  mysql_data:
+  rabbitmq_data:
+
+networks:
+  app-network:
+    driver: bridge

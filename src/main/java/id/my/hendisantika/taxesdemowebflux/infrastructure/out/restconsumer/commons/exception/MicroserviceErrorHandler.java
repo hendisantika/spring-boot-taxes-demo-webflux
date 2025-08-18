@@ -1,6 +1,9 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -70,5 +73,37 @@ public class MicroserviceErrorHandler {
         return ERROR_MAP
                 .getOrDefault(error.getClass(), (ex, map) -> RestConsumerException.buildException(ex))
                 .apply(error, errorCodeMap);
+    }
+
+    /**
+     * Method to process the handled errors returned by a microservice.(Errors returned as JsonErrorDTO)
+     * The error is mapped to JsonErrorDTO<ErrorDTO> and the exception is searched in the errorCodeMap to check
+     * if there is a specific exception for the error code.
+     * If the error code is not found in the map, the microservice error is propagated.
+     * If the error response could not be parsed, a "could not be parsed" technical exception is returned.
+     * If the JsonErrorDTO is empty, a "empty error" technical exception is returned.
+     * If the error response could not be parsed, a "could not be parsed" technical exception is returned.
+     *
+     * @param throwable    - Exception to be handled
+     * @param errorCodeMap - Map of errors that need to be handled with specific exceptions
+     * @return Exception - Exception to be returned
+     */
+    private static Exception handleResponseError(Throwable throwable, Map<String, Exception> errorCodeMap) {
+        var webClientException = (WebClientResponseException) throwable;
+        var httpStatus = String.valueOf(webClientException.getStatusCode().value());
+        log.info("Error response message: {}", webClientException.getResponseBodyAsString());
+        log.info("Error status: {}", httpStatus);
+        try {
+            var jsonErrorDTO = objectMapper.readValue(webClientException.getResponseBodyAsString(),
+                    new TypeReference<JsonErrorDTO<ErrorDTO>>() {
+                    });
+            return jsonErrorDTO.getErrors().stream().findFirst()
+                    .map(error -> errorCodeMap.getOrDefault(error.getCode(), propagateError(error, httpStatus)))
+                    .orElseGet(() -> new TechnicalRestConsumerException(webClientException.getResponseBodyAsString(),
+                            TechnicalExceptionMessage.EMPTY_ERROR_RESPONSE));
+        } catch (JsonProcessingException e) {
+            return new TechnicalRestConsumerException(webClientException.getResponseBodyAsString(),
+                    TechnicalExceptionMessage.ERROR_RESPONSE_COULD_NOT_BE_PARSED);
+        }
     }
 }

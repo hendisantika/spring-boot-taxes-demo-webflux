@@ -196,4 +196,11 @@ public class WebExchangeHelper {
                         .getBodyAsObject(getAttributeFromExchange(exchange, LogConstantHelper.RESPONSE_BODY))
         );
     }
+
+    private static Map<String, Object> getResponse(ServerRequest serverRequest) {
+        return Map.of(
+                LogConstantHelper.HEADERS.getName(), getResponseHeader(serverRequest),
+                LogConstantHelper.BODY.getName(), getAttribute(serverRequest, LogConstantHelper.RESPONSE_BODY.getName())
+        );
+    }
 }

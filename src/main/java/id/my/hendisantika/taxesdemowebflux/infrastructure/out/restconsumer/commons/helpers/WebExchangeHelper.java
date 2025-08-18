@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -105,5 +106,14 @@ public class WebExchangeHelper {
         String host = webExchange.getRequest().getURI().getHost();
         String method = webExchange.getRequest().getMethod().name();
         return List.of(host, method);
+    }
+
+    public static String getTransactionId(ServerWebExchange webExchange) {
+        return Optional.ofNullable(webExchange)
+                .map(ServerWebExchange::getRequest)
+                .map(HttpMessage::getHeaders)
+                .map(HttpHeaders::toSingleValueMap)
+                .orElse(Collections.emptyMap())
+                .getOrDefault("id", TechnicalLogConstants.EMPTY);
     }
 }

@@ -1,7 +1,9 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.helpers;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpMessage;
 import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.server.ServerWebExchange;
 
 import java.util.Optional;
 
@@ -22,6 +24,14 @@ public class WebExchangeHelper {
         return Optional.ofNullable(request)
                 .map(ServerRequest::headers)
                 .map(headers -> headers.firstHeader(name.getName()))
+                .orElse(LogConstantHelper.EMPTY_STRING.getName());
+    }
+
+    public static String getFirstHeader(ServerWebExchange exchange, LogConstantHelper name) {
+        return Optional.ofNullable(exchange)
+                .map(ServerWebExchange::getRequest)
+                .map(HttpMessage::getHeaders)
+                .map(headers -> headers.getFirst(name.getName()))
                 .orElse(LogConstantHelper.EMPTY_STRING.getName());
     }
 }

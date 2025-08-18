@@ -211,4 +211,12 @@ public class WebExchangeHelper {
         var dateFormat = new SimpleDateFormat(LogConstantHelper.TIME_PATTERN.getName());
         return dateFormat.format(Date.from(Instant.ofEpochMilli(currentTimeMillis)));
     }
+
+    public static Map<String, Object> getTechMessage(ClientRequest request, String requestBody, String responseBody,
+                                                     HttpHeaders responseHeaders) {
+        final Map<String, Object> requestMap = WebExchangeHelper.buildRequestMap(request, requestBody);
+        final Map<String, Object> responseMap = WebExchangeHelper.buildResponseMap(responseBody, responseHeaders);
+        return Map.of(LogConstantHelper.REQUEST.getName(), requestMap, LogConstantHelper.RESPONSE
+                .getName(), responseMap);
+    }
 }

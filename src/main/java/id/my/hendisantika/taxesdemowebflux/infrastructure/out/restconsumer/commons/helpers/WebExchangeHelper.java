@@ -137,4 +137,13 @@ public class WebExchangeHelper {
                 LogConstantHelper.RESPONSE.getName(), getResponse(serverRequest)
         );
     }
+
+    private static Map<String, Object> getRequest(ServerWebExchange exchange) {
+        return Map.of(
+                LogConstantHelper.HEADERS.getName(), getRequestHeader(exchange),
+                LogConstantHelper.BODY.getName(), JsonSerializerHelper.getBodyAsObject(
+                        JsonSerializerHelper.getBodyAsObject(getAttributeFromExchange(exchange,
+                                LogConstantHelper.REQUEST_BODY)))
+        );
+    }
 }

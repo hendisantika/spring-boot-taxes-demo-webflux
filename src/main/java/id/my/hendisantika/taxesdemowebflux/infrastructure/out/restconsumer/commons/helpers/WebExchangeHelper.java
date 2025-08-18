@@ -1,6 +1,7 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.helpers;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMessage;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -67,6 +68,13 @@ public class WebExchangeHelper {
         return Map.of(
                 TechnicalLogConstants.BODY, JsonSerializerHelper.getBodyAsObject(requestBody),
                 TechnicalLogConstants.HEADERS, requestHeaders.toSingleValueMap()
+        );
+    }
+
+    public static Map<String, Object> buildResponseMap(String responseBody, HttpHeaders responseHeaders) {
+        return Map.of(
+                TechnicalLogConstants.BODY, JsonSerializerHelper.getBodyAsObject(responseBody),
+                TechnicalLogConstants.HEADERS, responseHeaders.toSingleValueMap()
         );
     }
 }

@@ -89,4 +89,9 @@ public class RestClientFilterFunctionLog implements ExchangeFilterFunction {
         logger.log(Level.SEVERE, "request: {0}, techMsg: {1} , componentName: {2}",
                 new Object[]{request, techMsg, componentName});
     }
+
+    private void writeErrorLog(ClientRequest request, String bodyRequest, WebClientRequestException error) {
+        logger.log(Level.SEVERE, "request: {0}, bodyRequest: {1} , error: {2}, componentName: {3}",
+                new Object[]{request, bodyRequest, error, componentName});
+    }
 }

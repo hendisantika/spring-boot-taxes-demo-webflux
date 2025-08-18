@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -13,6 +14,9 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -67,5 +71,13 @@ public class RestClientFilterFunctionLog implements ExchangeFilterFunction {
     private DataBuffer createDefaultDataBuffer() {
         DataBufferFactory dataBufferFactory = new DefaultDataBufferFactory();
         return dataBufferFactory.wrap(new byte[0]);
+    }
+
+    private void writeSuccessfulLog(ClientRequest request, DataBuffer bodyResponse, StringBuilder bodyRequest,
+                                    HttpHeaders responseHeaders) {
+        final Map<String, Object> techMsg = WebExchangeHelper.getTechMessage(request, bodyRequest.toString(),
+                bodyResponse.toString(StandardCharsets.UTF_8), responseHeaders);
+        logger.log(Level.INFO, "Method: {0}, URI: {1}, techMsg: {2} , componentName: {3}",
+                new Object[]{request.method(), request.url(), techMsg, componentName});
     }
 }

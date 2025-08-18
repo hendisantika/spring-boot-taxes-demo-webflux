@@ -100,4 +100,10 @@ public class WebExchangeHelper {
         String method = request.method().name();
         return List.of(host, method);
     }
+
+    public static List<String> getTagList(ServerWebExchange webExchange) {
+        String host = webExchange.getRequest().getURI().getHost();
+        String method = webExchange.getRequest().getMethod().name();
+        return List.of(host, method);
+    }
 }

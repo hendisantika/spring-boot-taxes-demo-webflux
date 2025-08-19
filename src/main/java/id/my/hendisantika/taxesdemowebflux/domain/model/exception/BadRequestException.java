@@ -1,5 +1,6 @@
 package id.my.hendisantika.taxesdemowebflux.domain.model.exception;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.BusinessExceptionMessage;
 import lombok.Getter;
 
 import java.io.Serial;

@@ -1,11 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.r2dbc.holiday.adapter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.HolidayModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.holiday.port.IHolidayRepositoryPort;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.out.r2dbc.holiday.entity.HolidayEntity;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.out.r2dbc.holiday.repository.HolidayRepository;
 import lombok.RequiredArgsConstructor;
+import org.reactivecommons.utils.ObjectMapperImp;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 public class HolidayRepositoryAdapter implements IHolidayRepositoryPort {
 
     private final HolidayRepository holidayRepository;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapperImp objectMapper;
 
     @Override
     public Flux<HolidayModel> getHolidays() {
@@ -47,6 +47,7 @@ public class HolidayRepositoryAdapter implements IHolidayRepositoryPort {
         return Mono.just(holidayModel)
                 .map(h -> h.toBuilder().updatedAt(LocalDateTime.now()).build())
                 .map(holiday -> objectMapper.map(holiday, HolidayEntity.class))
+                .cast(HolidayEntity.class)
                 .flatMap(holidayRepository::save)
                 .map(holiday -> objectMapper.map(holiday, HolidayModel.class));
     }

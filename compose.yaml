@@ -15,7 +15,7 @@ services:
 
   mysql:
     image: mysql:9.4.0
-    container_name: mysql
+    container_name: mysql_tax
     restart: always
     ports:
       - "3306:3306"

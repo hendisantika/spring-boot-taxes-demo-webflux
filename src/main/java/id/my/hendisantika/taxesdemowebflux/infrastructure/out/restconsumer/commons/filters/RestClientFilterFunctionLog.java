@@ -1,5 +1,6 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.filters;
 
+import id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.helpers.WebExchangeHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
@@ -8,7 +9,7 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.reactive.ClientHttpRequest;
 import org.springframework.http.client.reactive.ClientHttpRequestDecorator;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;

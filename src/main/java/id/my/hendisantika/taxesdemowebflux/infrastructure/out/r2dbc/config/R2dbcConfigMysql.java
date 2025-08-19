@@ -1,11 +1,11 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.r2dbc.config;
 
-import com.rabbitmq.client.ConnectionFactory;
 import dev.miku.r2dbc.mysql.MySqlConnectionConfiguration;
 import dev.miku.r2dbc.mysql.MySqlConnectionFactory;
 import dev.miku.r2dbc.mysql.constant.SslMode;
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
+import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.r2dbc.ConnectionFactoryBuilder;
 import org.springframework.context.annotation.Bean;

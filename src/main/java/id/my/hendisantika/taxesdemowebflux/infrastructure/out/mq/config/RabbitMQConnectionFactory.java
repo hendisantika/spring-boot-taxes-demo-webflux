@@ -1,6 +1,7 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config;
 
 import com.rabbitmq.client.ConnectionFactory;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config.model.RabbitMQConnectionProperties;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,5 +41,20 @@ public class RabbitMQConnectionFactory {
         secret.setHostname(hostname);
         secret.setVirtualhost(virtualHost);
         return buildConnectionFactoryProvider(secret);
+    }
+
+    private ConnectionFactory buildConnectionFactoryProvider(RabbitMQConnectionProperties properties) {
+        try {
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost(properties.getHostname());
+            factory.setPort(properties.getPort());
+            factory.setUsername(properties.getUsername());
+            factory.setPassword(properties.getPassword());
+            factory.setVirtualHost(properties.getVirtualhost());
+            return factory;
+        } catch (Exception e) {
+            LOGGER.error(FAIL_MSG, e);
+            throw new RuntimeException(FAIL_MSG, e);
+        }
     }
 }

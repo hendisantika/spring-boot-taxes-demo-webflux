@@ -1,5 +1,7 @@
 package id.my.hendisantika.taxesdemowebflux.domain.model.exception;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.BusinessExceptionMessage;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : taxes-demo-webflux

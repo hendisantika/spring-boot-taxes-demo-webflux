@@ -19,6 +19,8 @@ import org.springframework.data.mongodb.core.convert.NoOpDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : taxes-demo-webflux

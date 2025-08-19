@@ -2,6 +2,7 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.DomainEventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventsName;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler.EventsHandler;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.async.api.HandlerRegistry;
 import org.springframework.context.annotation.Bean;

@@ -2,6 +2,8 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mongo.adapter;
 
 import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.port.IMessageRepositoryPort;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.out.mongo.document.MessageDocument;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.out.mongo.repository.MessageMongoReactiveRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;

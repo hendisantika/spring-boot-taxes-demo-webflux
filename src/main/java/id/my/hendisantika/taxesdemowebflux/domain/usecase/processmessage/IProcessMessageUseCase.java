@@ -1,5 +1,6 @@
 package id.my.hendisantika.taxesdemowebflux.domain.usecase.processmessage;
 
+import id.my.hendisantika.taxesdemowebflux.domain.model.messagedata.MessageModel;
 import reactor.core.publisher.Mono;
 
 /**

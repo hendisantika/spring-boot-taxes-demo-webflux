@@ -1,9 +1,9 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.mq.config;
 
-import com.rabbitmq.client.ConnectionFactory;
 import id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config.ReactiveRabbitMQConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;

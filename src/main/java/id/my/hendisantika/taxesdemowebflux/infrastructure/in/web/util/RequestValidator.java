@@ -3,6 +3,7 @@ package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.util;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BadRequestException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

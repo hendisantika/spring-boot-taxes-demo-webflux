@@ -1,6 +1,5 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.exceptionhandler;
 
-import com.fasterxml.jackson.databind.util.ExceptionUtil;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BadRequestException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.BusinessException;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
@@ -8,6 +7,9 @@ import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.Busine
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ErrorList;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.ExceptionMessage;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.in.web.util.ExceptionUtil;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.exception.RestConsumerException;
+import id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.helpers.LogConstantHelper;
 import lombok.NonNull;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;

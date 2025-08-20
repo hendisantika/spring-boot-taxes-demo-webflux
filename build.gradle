@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
-    runtimeOnly 'io.asyncer:r2dbc-mysql:1.4.0'
+    runtimeOnly 'io.asyncer:r2dbc-mysql:1.4.1'
     implementation("io.r2dbc:r2dbc-pool:1.0.0.RELEASE")
     implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
     // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api

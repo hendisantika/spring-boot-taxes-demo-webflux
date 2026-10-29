@@ -4,6 +4,7 @@ import id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.config.Reacti
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +46,13 @@ public class RabbitMQConfigTax {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(converter); // Aplica el convertidor
         return template;
+    }
+
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory, Queue queue) {
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
+        rabbitAdmin.declareQueue(queue); // Declare eagerly so the reactive consumer finds the queue on startup
+        return rabbitAdmin;
     }
 
     @Bean

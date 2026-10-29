@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-@DependsOn("queue")
+@DependsOn({"queue", "rabbitAdmin"})
 public class ReactiveRabbitMQConsumerHandler {
 
     private static final Logger logger = Logger.getLogger(ReactiveRabbitMQConsumerHandler.class.getName());

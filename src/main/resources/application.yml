@@ -9,6 +9,12 @@ spring:
     base-path: /api/v1/tax
   application:
     name: taxes-demo
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:admin}
+    password: ${RABBITMQ_PASSWORD:password}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST:/}
   devtools:
     add-properties: false
   profiles:
@@ -98,3 +104,9 @@ events-entry-points:
   events:
     TAX_EVENT_MESSAGE: tax.demo.routing.key.event.message
     TAX_EVENT_OTHER: tax.demo.routing.key.event.other
+
+# reactive-commons requires the default 'app' domain; connection settings fall back to spring.rabbitmq
+app:
+  async:
+    app:
+      withDLQRetry: false

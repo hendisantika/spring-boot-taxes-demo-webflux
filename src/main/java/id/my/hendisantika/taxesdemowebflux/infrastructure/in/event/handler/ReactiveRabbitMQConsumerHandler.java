@@ -1,6 +1,5 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.in.event.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.DomainEventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.events.EventModel;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.TechnicalException;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import reactor.rabbitmq.Receiver;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.LinkedHashMap;
 import java.util.logging.Level;

@@ -1,9 +1,9 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.helpers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -31,7 +31,7 @@ public class JsonSerializerHelper {
             } else if (jsonBody instanceof Map) {
                 body = objectMapper.readValue(objectMapper.writeValueAsString(jsonBody), Object.class);
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             return jsonBody;
         }
         return body;

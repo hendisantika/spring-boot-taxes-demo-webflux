@@ -1,8 +1,5 @@
 package id.my.hendisantika.taxesdemowebflux.infrastructure.out.restconsumer.commons.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.hendisantika.taxesdemowebflux.domain.model.exception.message.TechnicalExceptionMessage;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,6 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -101,7 +101,7 @@ public class MicroserviceErrorHandler {
                     .map(error -> errorCodeMap.getOrDefault(error.getCode(), propagateError(error, httpStatus)))
                     .orElseGet(() -> new TechnicalRestConsumerException(webClientException.getResponseBodyAsString(),
                             TechnicalExceptionMessage.EMPTY_ERROR_RESPONSE));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return new TechnicalRestConsumerException(webClientException.getResponseBodyAsString(),
                     TechnicalExceptionMessage.ERROR_RESPONSE_COULD_NOT_BE_PARSED);
         }

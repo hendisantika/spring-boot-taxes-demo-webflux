@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import reactor.core.scheduler.Schedulers;
-import reactor.rabbitmq.RabbitFlux;
 import reactor.rabbitmq.Receiver;
 import reactor.rabbitmq.ReceiverOptions;
 
@@ -55,7 +54,7 @@ public class ReactiveRabbitMQConfig {
                 .connectionFactory(connectionFactory)
                 .connectionSubscriptionScheduler(Schedulers.boundedElastic());
 
-        return RabbitFlux.createReceiver(receiverOptions);
+        return new Receiver(receiverOptions);
     }
 //    private void configureSsl(ConnectionFactory factory) {
 //        try {

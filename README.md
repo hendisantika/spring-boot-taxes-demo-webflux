@@ -1,5 +1,10 @@
 # Spring Boot Taxes Demo WebFlux
 
+[![Java CI with Gradle](https://github.com/hendisantika/spring-boot-taxes-demo-webflux/actions/workflows/gradle.yml/badge.svg)](https://github.com/hendisantika/spring-boot-taxes-demo-webflux/actions/workflows/gradle.yml)
+![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.2-6DB33F?logo=springboot)
+![Gradle](https://img.shields.io/badge/Gradle-9.8.2-02303A?logo=gradle)
+
 A reactive Spring Boot application demonstrating tax processing with Clean Architecture principles, WebFlux, and
 event-driven architecture using RabbitMQ.
 
@@ -23,20 +28,21 @@ This application follows **Clean Architecture** patterns with clear separation o
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Spring Boot 3.5.4
-- **Reactive Stack**: Spring WebFlux
-- **Java Version**: 21
+- **Framework**: Spring Boot 4.1.2
+- **Reactive Stack**: Spring WebFlux, WebClient
+- **Java Version**: 25
+- **JSON**: Jackson 3 (`tools.jackson`)
 - **Databases**:
     - MongoDB (Reactive)
     - MySQL with R2DBC
 - **Message Broker**: RabbitMQ
-- **Build Tool**: Gradle
-- **Testing**: JUnit 5, Reactor Test
+- **Build Tool**: Gradle 9.8.2 (wrapper included)
+- **Testing**: JUnit 5, Reactor Test, Testcontainers
 
 ## 📋 Prerequisites
 
-- Java 21
-- Docker and Docker Compose
+- Java 25 (JDK 25, e.g. Eclipse Temurin)
+- Docker and Docker Compose (Docker is also required to run the tests)
 - Gradle (or use the included wrapper)
 
 ## 🚀 Getting Started
@@ -53,7 +59,7 @@ cd spring-boot-taxes-demo-webflux
 The application uses Docker Compose to manage dependencies:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start:
@@ -69,6 +75,9 @@ This will start:
 ```
 
 The application will start on port 8080 with base path `/api/v1/tax`.
+
+> 💡 Thanks to Spring Boot's Docker Compose support, `./gradlew bootRun` also starts (and stops) the services in
+> `compose.yaml` automatically, so step 2 is optional during development.
 
 ## 🔧 Configuration
 
@@ -145,6 +154,9 @@ Run tests with:
 ./gradlew test
 ```
 
+The context test uses [Testcontainers](https://testcontainers.com/) to start MySQL, MongoDB and RabbitMQ
+automatically, so only a running Docker daemon is required — no need to run `docker compose` first.
+
 ## 🏃‍♂️ Running in Development
 
 For development with hot reload:
@@ -163,8 +175,19 @@ This creates a JAR file in `build/libs/` directory.
 
 ## 🐳 Docker Support
 
-The application includes Docker Compose configuration for all dependencies. Use `docker-compose up -d` to start the
+The application includes Docker Compose configuration for all dependencies. Use `docker compose up -d` to start the
 required services.
+
+## 🔄 CI/CD & Dependency Updates
+
+- **GitHub Actions** (`.github/workflows/gradle.yml`): builds and tests the project on JDK 25 (Temurin) for every
+  push and pull request to `main`, and submits the dependency graph for Dependabot alerts.
+- **Dependabot** (`.github/dependabot.yml`):
+    - **Gradle** — checked daily; related updates are grouped (Spring Boot, Kotlin, reactive-commons, R2DBC,
+      Testcontainers, and remaining minor/patch bumps)
+    - **GitHub Actions** — checked weekly and grouped into a single PR
+    - **Docker Compose** — container images in `compose.yaml` checked weekly
+    - PRs use conventional commit prefixes (`build(deps)`, `ci(deps)`, `build(docker)`)
 
 ## 🤝 Contributing
 
